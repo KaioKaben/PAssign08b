@@ -1,5 +1,5 @@
 /**
-* File: Lab10.java
+* File: PAssign08b.java
 * Class: CSCI 1302 - Lab10
 * Authors: Liam Peña, Kaden Bray
 * Date Created: Nov 13, 2026
@@ -28,7 +28,7 @@ import javafx.scene.text.FontWeight;
 import javafx.scene.text.TextAlignment;
 import javafx.stage.Stage;
 
-public class Lab10 extends Application {
+public class PAssign08b extends Application {
 
 	// skin radio buttons
 	private RadioButton rbTan;
