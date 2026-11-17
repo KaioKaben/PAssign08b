@@ -3,7 +3,7 @@
 * Class: CSCI 1302 - Lab10
 * Authors: Liam Peña, Kaden Bray
 * Date Created: Nov 13, 2026
-* Description: Miles per gallon calculator
+* Description: Character customizer
 */
 
 package lab10;
@@ -11,232 +11,458 @@ package lab10;
 import javafx.application.Application;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.RadioButton;
+import javafx.scene.control.Toggle;
 import javafx.scene.control.ToggleGroup;
+import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
+import javafx.scene.text.Font;
+import javafx.scene.text.FontWeight;
+import javafx.scene.text.TextAlignment;
 import javafx.stage.Stage;
 
 public class Lab10 extends Application {
-	
+
+	// skin radio buttons
 	private RadioButton rbTan;
 	private RadioButton rbBrown;
 
+	// hat radio buttons
 	private RadioButton rbNoHat;
 	private RadioButton rbTopHat;
 	private RadioButton rbCowboyHat;
+
+	// shirt option radio buttons
+	private RadioButton rbShirt1;
+	private RadioButton rbShirt2;
 	
+	// shirt color radio buttons
 	private RadioButton rbRedShirt;
 	private RadioButton rbGreenShirt;
 	private RadioButton rbBlackShirt;
 
+	// pants color radio buttons
 	private RadioButton rbBluePants;
 	private RadioButton rbBlackPants;
-	private RadioButton rbBiegePants;
-	
+	private RadioButton rbBeigePants;
+
+	// shoe radio buttons
 	private RadioButton rbBrownShoes;
 	private RadioButton rbBlackShoes;
 	private RadioButton rbWhiteShoes;
 	
-	public static void main (String[] args) {
+	// panes for hats and character body parts
+	Pane topHat = new Pane();
+	Pane cowboyHat = new Pane();
+	Rectangle head = new Rectangle(50, 50);
+	Rectangle body = new Rectangle(-5, 50, 60, 75);
+	Rectangle armRight = new Rectangle(-35, 50, 30, 41);
+	Rectangle handRight = new Rectangle(-35, 90, 30, 35);
+	Rectangle armLeft = new Rectangle(55, 50, 30, 41);
+	Rectangle handLeft = new Rectangle(55, 90, 30, 35);
+	Rectangle legRight = new Rectangle(-5, 125, 30, 75);
+	Rectangle legLeft = new Rectangle(25, 125, 30, 75);
+	Rectangle shoeRight = new Rectangle(-5, 200, 30, 20);
+	Rectangle shoeLeft = new Rectangle(25, 200, 30, 20);
+	
+	// save load buttons
+	private Button btSave;
+	private Button btLoad;
+	
+	// saved parameters for "loadouts"
+	private RadioButton savedSkin;
+	private RadioButton savedHat;
+	private RadioButton savedShirt;
+	private RadioButton savedShirtColor;
+	private RadioButton savedPants;
+	private RadioButton savedShoes;
+
+	// toggle groups for radio buttons
+	ToggleGroup skinGroup = new ToggleGroup();
+	ToggleGroup hatGroup = new ToggleGroup();
+	ToggleGroup shirtGroup = new ToggleGroup();
+	ToggleGroup shirtColorGroup = new ToggleGroup();
+	ToggleGroup pantsGroup = new ToggleGroup();
+	ToggleGroup shoeGroup = new ToggleGroup();
+	
+	// main method
+	public static void main(String[] args) {
 		launch(args);
 	}
 
 	@Override
 	public void start(Stage primaryStage) {
-		
-		// creation of tophat
+
+		// creation of top hat
 		Rectangle tophatBrim = new Rectangle(-12, -5, 75, 5);
 		Rectangle tophatTop = new Rectangle(0, -60, 50, 60);
-		
-		Pane topHat = new Pane();
+
+		// set top hat pane properties
 		topHat.getChildren().addAll(tophatBrim, tophatTop);
 		topHat.setVisible(false);
-		
+
 		// creation of cowboy hat
 		Rectangle cowboyTop = new Rectangle(-2, -30, 55, 25);
 		cowboyTop.setFill(Color.SADDLEBROWN);
 		Rectangle cowboyBrim = new Rectangle(-17, -5, 85, 5);
 		cowboyBrim.setFill(Color.SADDLEBROWN);
-		
-		Pane cowboyHat = new Pane();
+
+		// set cowboy hat pane properties
 		cowboyHat.getChildren().addAll(cowboyBrim, cowboyTop);
 		cowboyHat.setVisible(false);
-		
-		// creation of character
-		Rectangle head = new Rectangle(50, 50);
-		head.setFill(Color.TAN);
-		Rectangle body = new Rectangle(-5, 50, 60, 75);
-		body.setFill(Color.RED);
-		Rectangle armRight = new Rectangle(-35, 50, 30, 40);
+
+		// create borders for better visibility on certain parts
 		armRight.setStroke(Color.GREY);
-		armRight.setFill(Color.RED);
-		Rectangle handRight = new Rectangle(-35, 90, 30, 35);
-		handRight.setFill(Color.TAN);
-		Rectangle armLeft = new Rectangle(55, 50, 30, 40);
 		armLeft.setStroke(Color.GREY);
-		armLeft.setFill(Color.RED);
-		Rectangle handLeft = new Rectangle(55, 90, 30, 35);
-		handLeft.setFill(Color.TAN);
-		Rectangle legRight = new Rectangle(-5, 125, 30, 75);
 		legRight.setStroke(Color.GREY);
-		legRight.setFill(Color.BLUE);
-		Rectangle legLeft = new Rectangle(25, 125, 30, 75);
 		legLeft.setStroke(Color.GREY);
-		legLeft.setFill(Color.BLUE);
-		Rectangle shoeRight = new Rectangle(-5, 200, 30, 20);
 		shoeRight.setStroke(Color.GREY);
-		shoeRight.setFill(Color.SADDLEBROWN);
-		Rectangle shoeLeft = new Rectangle(25, 200, 30, 20);
 		shoeLeft.setStroke(Color.GREY);
-		shoeLeft.setFill(Color.SADDLEBROWN);
-		
+
+		// store character in pane
 		Pane character = new Pane();
-		character.getChildren().addAll(topHat, cowboyHat, head, body, armRight, handRight, armLeft, handLeft, legRight, legLeft, shoeRight, shoeLeft);
-		
+		character.getChildren().addAll(topHat, cowboyHat, head, body, armRight, handRight, armLeft, handLeft, legRight,
+				legLeft, shoeRight, shoeLeft);
+
 		// Create Skin Options
 		Label lbSkin = new Label("Skin Color");
+		lbSkin.setFont(Font.font("Arial", FontWeight.BOLD, 14));
 		rbTan = new RadioButton("Tan");
 		rbBrown = new RadioButton("Brown");
-		
-		ToggleGroup skinGroup = new ToggleGroup();
+
 		rbTan.setToggleGroup(skinGroup);
 		rbBrown.setToggleGroup(skinGroup);
 		rbTan.setSelected(true);
-		
+
 		// Give SkinColor handling
-		
-		
-		// HBox for skin
+		rbTan.setOnAction(e -> updateSkin());
+		rbBrown.setOnAction(e -> updateSkin());
+
+		// HBox for skin options
 		HBox skinBox = new HBox(15);
 		skinBox.setAlignment(Pos.CENTER);
 		skinBox.getChildren().addAll(rbTan, rbBrown);
-		
+
 		// Create HatOptions
 		Label lbHat = new Label("Hat Options");
+		lbHat.setFont(Font.font("Arial", FontWeight.BOLD, 14));
 		rbNoHat = new RadioButton("No Hat");
 		rbTopHat = new RadioButton("Top Hat");
 		rbCowboyHat = new RadioButton("Cowboy Hat");
-		
-		ToggleGroup hatGroup = new ToggleGroup();
+
 		rbNoHat.setToggleGroup(hatGroup);
 		rbTopHat.setToggleGroup(hatGroup);
 		rbCowboyHat.setToggleGroup(hatGroup);
 		rbNoHat.setSelected(true);
-		
+
 		// Give hats handling
-		rbNoHat.setOnAction(e -> updateHat(topHat, cowboyHat));
-		rbCowboyHat.setOnAction(e -> updateHat(topHat, cowboyHat));
-		rbTopHat.setOnAction(e -> updateHat(topHat, cowboyHat));
-		
-		// HBox hatBox
+		rbNoHat.setOnAction(e -> updateHat());
+		rbCowboyHat.setOnAction(e -> updateHat());
+		rbTopHat.setOnAction(e -> updateHat());
+
+		// HBox for hat options
 		HBox hatBox = new HBox(15);
 		hatBox.setAlignment(Pos.CENTER);
 		hatBox.getChildren().addAll(rbNoHat, rbCowboyHat, rbTopHat);
-		
-		// Create shirt options
-		Label lbShirt = new Label("Shirts");
+
+		// Create shirt & shirt color options
+		Label lbShirt = new Label("Shirt Options");
+		lbShirt.setFont(Font.font("Arial", FontWeight.BOLD, 14));
+		rbShirt1 = new RadioButton("Shirt 1");
+		rbShirt2 = new RadioButton("Shirt 2");
 		rbRedShirt = new RadioButton("Red");
 		rbGreenShirt = new RadioButton("Green");
 		rbBlackShirt = new RadioButton("Black");
-
-		ToggleGroup shirtGroup = new ToggleGroup();
-		rbRedShirt.setToggleGroup(shirtGroup);
-		rbGreenShirt.setToggleGroup(shirtGroup);
-		rbBlackShirt.setToggleGroup(shirtGroup);
+		
+		rbShirt1.setToggleGroup(shirtGroup);
+		rbShirt2.setToggleGroup(shirtGroup);
+		rbShirt1.setSelected(true);
+		
+		rbRedShirt.setToggleGroup(shirtColorGroup);
+		rbGreenShirt.setToggleGroup(shirtColorGroup);
+		rbBlackShirt.setToggleGroup(shirtColorGroup);
 		rbRedShirt.setSelected(true);
-		
+
 		// Give shirts handling
+		rbShirt1.setOnAction(e -> updateShirt());
+		rbShirt2.setOnAction(e -> updateShirt());
 		
-		
-		// HBox for Shirts
+		rbRedShirt.setOnAction(e -> updateShirt());
+		rbGreenShirt.setOnAction(e -> updateShirt());
+		rbBlackShirt.setOnAction(e -> updateShirt());
+
+		// HBox for Shirt and shirt color options
 		HBox shirtBox = new HBox(15);
 		shirtBox.setAlignment(Pos.CENTER);
-		shirtBox.getChildren().addAll(rbRedShirt, rbGreenShirt, rbBlackShirt);
+		shirtBox.getChildren().addAll(rbShirt1, rbShirt2);
 		
+		HBox shirtColorBox = new HBox(15);
+		shirtColorBox.setAlignment(Pos.CENTER);
+		shirtColorBox.getChildren().addAll(rbRedShirt, rbGreenShirt, rbBlackShirt);
+
 		// Create pant options
 		Label lbPants = new Label("Pants");
+		lbPants.setFont(Font.font("Arial", FontWeight.BOLD, 14));
 		rbBluePants = new RadioButton("Blue");
 		rbBlackPants = new RadioButton("Black");
-		rbBiegePants = new RadioButton("Biege");
+		rbBeigePants = new RadioButton("Biege");
 
-		ToggleGroup pantsGroup = new ToggleGroup();
 		rbBluePants.setToggleGroup(pantsGroup);
 		rbBlackPants.setToggleGroup(pantsGroup);
-		rbBiegePants.setToggleGroup(pantsGroup);
+		rbBeigePants.setToggleGroup(pantsGroup);
 		rbBluePants.setSelected(true);
-		
+
 		// Give pants handling
-		
-		
-		// HBox for Pants
+		rbBluePants.setOnAction(e -> updatePants());
+		rbBlackPants.setOnAction(e -> updatePants());
+		rbBeigePants.setOnAction(e -> updatePants());
+
+		// HBox for Pant options
 		HBox pantBox = new HBox(15);
 		pantBox.setAlignment(Pos.CENTER);
-		pantBox.getChildren().addAll(rbBluePants, rbBlackPants, rbBiegePants);
-		
+		pantBox.getChildren().addAll(rbBluePants, rbBlackPants, rbBeigePants);
+
 		// Create shoe options
 		Label lbShoes = new Label("Shoes");
+		lbShoes.setFont(Font.font("Arial", FontWeight.BOLD, 14));
 		rbBrownShoes = new RadioButton("Brown");
 		rbBlackShoes = new RadioButton("Black");
 		rbWhiteShoes = new RadioButton("White");
 
-		ToggleGroup shoeGroup = new ToggleGroup();
 		rbBrownShoes.setToggleGroup(shoeGroup);
 		rbBlackShoes.setToggleGroup(shoeGroup);
 		rbWhiteShoes.setToggleGroup(shoeGroup);
 		rbBrownShoes.setSelected(true);
-		
+
 		// Give shoes handling
-		
-		
-		// HBox for shoes
+		rbBrownShoes.setOnAction(e -> updateShoes());
+		rbBlackShoes.setOnAction(e -> updateShoes());
+		rbWhiteShoes.setOnAction(e -> updateShoes());
+
+		// HBox for shoe options
 		HBox shoeBox = new HBox(15);
 		shoeBox.setAlignment(Pos.CENTER);
 		shoeBox.getChildren().addAll(rbBrownShoes, rbBlackShoes, rbWhiteShoes);
-		
-		
-		// Vbox for customizing
+
+		// Vbox for customization options
 		VBox customizeBox = new VBox(10);
 		customizeBox.setAlignment(Pos.CENTER);
-		
-		customizeBox.getChildren().addAll(lbSkin, skinBox, lbHat, hatBox, lbShirt, shirtBox,
-				lbPants, pantBox, lbShoes, shoeBox);
-		
-		// Main pane
-		FlowPane pane = new FlowPane(75, 0);
+		customizeBox.getChildren().addAll(lbSkin, skinBox, lbHat, hatBox, lbShirt, shirtBox, shirtColorBox, lbPants, pantBox, lbShoes,
+				shoeBox);
 
+		// Customization pane
+		FlowPane pane = new FlowPane(75, 0);
 		pane.setAlignment(Pos.CENTER);
 		pane.getChildren().addAll(character, customizeBox);
+
+		// top label
+		Label lbCustomize = new Label("Customize Your Character!");
+		lbCustomize.setFont(Font.font("Arial", FontWeight.BOLD, 30));
+		lbCustomize.setAlignment(Pos.CENTER);
+		lbCustomize.setTextAlignment(TextAlignment.CENTER);
 		
-		Scene scene = new Scene(pane, 500, 500);
+		// create save/load buttons
+		btSave = new Button("Save");
+		btLoad = new Button("Load");
+		
+		btSave.setPrefSize(50, 50);
+		btLoad.setPrefSize(50, 50);
+		
+		// add handling for save/load buttons
+		btSave.setOnAction(e -> save());
+		btLoad.setOnAction(e -> load());
+		
+		// hbox for save/load buttons
+		HBox buttonBox = new HBox(25);
+		buttonBox.setAlignment(Pos.TOP_CENTER);
+		buttonBox.getChildren().addAll(btSave, btLoad);
+
+		// Main pane
+		BorderPane border = new BorderPane();
+
+		border.setTop(lbCustomize);
+		BorderPane.setAlignment(lbCustomize, Pos.BOTTOM_CENTER);
+		border.setCenter(pane);
+		border.setBottom(buttonBox);
+		BorderPane.setAlignment(buttonBox, Pos.TOP_CENTER);
+
+		// call methods to update everything appropriately at start of program
+		updateHat();
+		updateSkin();
+		updateShirt();
+		updatePants();
+		updateShoes();
+		save();
+		
+		// create scene, set scene and title
+		Scene scene = new Scene(border, 600, 500);
 		primaryStage.setScene(scene);
 		primaryStage.setTitle("Character Customizer");
 		primaryStage.show();
 	}
 	
+	// handling for updating skin options
+	private void updateSkin() {
+		if (rbTan.isSelected()) {
+			if (rbShirt2.isSelected()) {
+				armRight.setFill(Color.TAN);
+				armLeft.setFill(Color.TAN);
+				armRight.setStroke(Color.TAN);
+				armLeft.setStroke(Color.TAN);
+			}
+			head.setFill(Color.TAN);
+			handRight.setFill(Color.TAN);
+			handLeft.setFill(Color.TAN);
+		} else {
+			if (rbShirt2.isSelected()) {
+				armRight.setFill(Color.SIENNA);
+				armLeft.setFill(Color.SIENNA);
+				armRight.setStroke(Color.SIENNA);
+				armLeft.setStroke(Color.SIENNA);
+			}
+			head.setFill(Color.SIENNA);
+			handRight.setFill(Color.SIENNA);
+			handLeft.setFill(Color.SIENNA);
+		}
+	}
+
+	// handling for updating hat options
+	private void updateHat() {
+		if (rbTopHat.isSelected()) {
+			topHat.setVisible(true);
+			cowboyHat.setVisible(false);
+		} else if (rbCowboyHat.isSelected()) {
+			topHat.setVisible(false);
+			cowboyHat.setVisible(true);
+		} else {
+			topHat.setVisible(false);
+			cowboyHat.setVisible(false);
+		}
+	}
 	
+	// handling for shirt & shirt color options
+	private void updateShirt() {
+		if (rbRedShirt.isSelected()) {
+			body.setFill(Color.RED);
+			if (rbShirt1.isSelected()) {
+				armRight.setFill(Color.RED);
+				armLeft.setFill(Color.RED);
+				armRight.setStroke(Color.GREY);
+				armLeft.setStroke(Color.GREY);
+			}
+		} else if (rbGreenShirt.isSelected()) {
+			body.setFill(Color.GREEN);
+			if (rbShirt1.isSelected()) {
+				armRight.setFill(Color.GREEN);
+				armLeft.setFill(Color.GREEN);
+				armRight.setStroke(Color.GREY);
+				armLeft.setStroke(Color.GREY);
+			}
+		} else {
+			body.setFill(Color.BLACK);
+			if (rbShirt1.isSelected()) {
+				armRight.setFill(Color.BLACK);
+				armLeft.setFill(Color.BLACK);
+				armRight.setStroke(Color.GREY);
+				armLeft.setStroke(Color.GREY);
+			}
+		}
+		
+		updateSkin();
+	}
 	
-	private void updateHat(Pane topHat, Pane cowboyHat){
-		 if (rbNoHat.isSelected()) {
-		        topHat.setVisible(false);
-		        cowboyHat.setVisible(false);
-		    }
-		    else if (rbTopHat.isSelected()) {
-		        topHat.setVisible(true);
-		        cowboyHat.setVisible(false);
-		    }
-		    else if (rbCowboyHat.isSelected()) {
-		        topHat.setVisible(false);
-		        cowboyHat.setVisible(true);
-		    }
-		 
-		 
-		 
+	// handling for pants color
+	private void updatePants() {
+		if (rbBluePants.isSelected()) {
+			legRight.setFill(Color.BLUE);
+			legLeft.setFill(Color.BLUE);
+		} else if (rbBlackPants.isSelected()) {
+			legRight.setFill(Color.BLACK);
+			legLeft.setFill(Color.BLACK);
+		} else {
+			legRight.setFill(Color.KHAKI);
+			legLeft.setFill(Color.KHAKI);
+		}
+	}
+	
+	// handling for shoe color
+	private void updateShoes() {
+		if (rbBrownShoes.isSelected()) {
+			shoeRight.setFill(Color.SADDLEBROWN);
+			shoeLeft.setFill(Color.SADDLEBROWN);
+		} else if (rbBlackShoes.isSelected()) {
+			shoeRight.setFill(Color.BLACK);
+			shoeLeft.setFill(Color.BLACK);
+		} else {
+			shoeRight.setFill(Color.WHITESMOKE);
+			shoeLeft.setFill(Color.WHITESMOKE);
+		}
+	}
+	
+	// saves the current loadout to be loaded later.
+	private void save() {
+		savedSkin = (RadioButton)skinGroup.getSelectedToggle();
+		savedHat = (RadioButton)hatGroup.getSelectedToggle();
+		savedShirt = (RadioButton)shirtGroup.getSelectedToggle();
+		savedShirtColor = (RadioButton)shirtColorGroup.getSelectedToggle();
+		savedPants = (RadioButton)pantsGroup.getSelectedToggle();
+		savedShoes = (RadioButton)shoeGroup.getSelectedToggle();
+		
+		System.out.println("Loadout Saved!");
+	}
+	
+	// loads the saved loadout. loads default loadout if nothing was saved previously
+	private void load() {
+		for (Toggle e: skinGroup.getToggles()) {
+			if (e.equals(savedSkin)) {
+				e.setSelected(true);
+			}
+		}
+		
+		for (Toggle e: hatGroup.getToggles()) {
+			if (e.equals(savedHat)) {
+				e.setSelected(true);
+			}
+		}
+		
+		for (Toggle e: shirtGroup.getToggles()) {
+			if (e.equals(savedShirt)) {
+				e.setSelected(true);
+			}
+		}
+		
+		for (Toggle e: shirtColorGroup.getToggles()) {
+			if (e.equals(savedShirtColor)) {
+				e.setSelected(true);
+			}
+		}
+		
+		for (Toggle e: pantsGroup.getToggles()) {
+			if (e.equals(savedPants)) {
+				e.setSelected(true);
+			}
+		}
+		
+		for (Toggle e: shoeGroup.getToggles()) {
+			if (e.equals(savedShoes)) {
+				e.setSelected(true);
+			}
+		}
+		
+		// ensures everything is updated properly
+		updateSkin();
+		updateHat();
+		updateShirt();
+		updatePants();
+		updateShoes();
+		
+		System.out.println("Loadout Finished Loading");
 	}
 }
-
